@@ -1,5 +1,5 @@
 <h1 align="center">
-<img src="https://github.com/somehitDev/PlateHTTP/tree/main/Core/Assets/favicon.png"><br>
+<img src="https://raw.githubusercontent.com/somehitDev/PlateHTTP/refs/heads/main/Core/Assets/favicon.png" height=100><br>
 PlateHTTP
 </h1>
 <p align="center">
@@ -59,4 +59,4 @@ PlateHTTP::debug - Endpoint [GET] `/`
 <br><br>
 
 ## 📆 CHANGELOG
-- see [CHANGELOG](https://github.com/somehitDev/PlateHTTP/tree/main/CHANGELOG.md)
+- see [CHANGELOG](https://github.com/somehitDev/PlateHTTP/blob/main/CHANGELOG.md)
