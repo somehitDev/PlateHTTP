@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <Nullable>enable</Nullable>
+
+        <OutputPath>build</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Assets/**" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <Title>PlateHTTP</Title>
+        <Version>0.0.1</Version>
+        <Authors>somehitDev</Authors>
+        <Description>Simple and Light WebServer for .NET</Description>
+        <PackageProjectUrl>https://github.com/somehitDev/PlateHTTP</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/somehitDev/PlateHTTP/tree/main/Core</RepositoryUrl>
+        <PackageTags>http; server;</PackageTags>
+        <PackageLicenseFile>../LICENSE</PackageLicenseFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+</Project>

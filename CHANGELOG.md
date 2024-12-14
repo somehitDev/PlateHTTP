@@ -1,0 +1,34 @@
+### 2024/12/14(initial release / 0.0.1)
+- Core
+  - Application(Server)
+    - Minimal functionality.
+    - Designed with a focus on rest api.
+    - Interface object for user customization support.
+    - Base error html pages.
+  - Logging
+    - Color logging support.
+    - Format by logging level.
+    - Interface object for user customization support.
+  - StaticFiles
+    - FileStaticLoader
+      - Serving static files from `Local Disk`.
+      - FileNotFoudException handling.
+    - ResourceStaticLoader
+      - Serving static files from `Embedded Resources`.
+      - FileNotFoundException handling.
+    - Interface object for user customization support.
+  - Request/Response
+    - New class for simple handling.
+    - Minimal Property/Methods.
+    - Interface object for user customization support.
+- Extensions
+  - Templating
+    - FileTemplateLoader
+      - Search/Load template files from `Local Disk`.
+      - FileNotFoudException handling.
+    - ResourceTemplateLoader
+      - Search/Load template files from `Embedded Resources`.
+      - FileNotFoudException handling.
+    - Extends
+      - add `UseTemplateLoader` to `WebApplication`.
+      - add `RenderTemplate`, `RenderHTML` to `Response`.

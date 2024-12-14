@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <Nullable>enable</Nullable>
+
+        <OutputPath>build</OutputPath>
+
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="wwwroot/**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../Core/PlateHTTP.csproj" />
+        <ProjectReference Include="../Extensions/Templating/PlateHTTP.Extensions.Templating.csproj" />
+    </ItemGroup>
+</Project>

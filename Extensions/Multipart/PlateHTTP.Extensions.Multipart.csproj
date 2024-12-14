@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <Nullable>enable</Nullable>
+
+        <OutputPath>build</OutputPath>
+
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Title>PlateHTTP.Extensions.Multipart</Title>
+        <Version>2025.1.1</Version>
+        <Authors>somehitDev</Authors>
+        <Description>Multipart Extension for PlateHTTP</Description>
+        <PackageProjectUrl>https://github.com/somehitDev/PlateHTTP</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/somehitDev/PlateHTTP/tree/main/Extensions/Multipart</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../../Core/PlateHTTP.Core.csproj" />
+
+        <PackageReference Include="Scriban" Version="5.12.0" />
+    </ItemGroup>
+</Project>
