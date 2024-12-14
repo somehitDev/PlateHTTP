@@ -1,5 +1,6 @@
 <h1 align="center">
-    PlateHTTP
+<img src="https://github.com/somehitDev/PlateHTTP/tree/main/Core/Assets/favicon.png"><br>
+PlateHTTP
 </h1>
 <p align="center">
     Simple and Light WebServer for .NET
@@ -58,4 +59,4 @@ PlateHTTP::debug - Endpoint [GET] `/`
 <br><br>
 
 ## 📆 CHANGELOG
-- see [CHANGELOG](https://github.com/somehitDev/PlateHTTP/tree/master/CHANGELOG.md)
+- see [CHANGELOG](https://github.com/somehitDev/PlateHTTP/tree/main/CHANGELOG.md)
