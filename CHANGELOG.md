@@ -32,3 +32,22 @@
     - Extends
       - add `UseTemplateLoader` to `WebApplication`.
       - add `RenderTemplate`, `RenderHTML` to `Response`.
+
+### 2024/12/15
+- Core
+  - WebApplication
+    - Create Dictionary `Extensions` attribute.
+    - Extension objects will be located.
+  - Request
+    - Add `Body` attribute.
+      - returns InputStream as string.
+    - Change content of `GetJSON` method.
+  - Response
+    - Add 2 `SendJSON` methods.
+      - send ReadOnlyDictionary.
+      - send JSONString.
+- Extensions
+  - Templating
+    - Changes based on WebApplication changes(creation of `Extensions` attribute).
+- Tests
+  - Add simple post method test.
