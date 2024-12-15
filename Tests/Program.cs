@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using PlateHTTP.Core;
 using PlateHTTP.Extensions.Templating;
 
@@ -9,6 +11,9 @@ server.UseTemplateLoader(new ResourceTemplateLoader("wwwroot.templates"));
 
 server.Get("/", async ( request, response ) => {
     await response.RenderTemplate("index.html");
+});
+server.Post("/api", async ( request, response ) => {
+    await response.SendJSON(request.GetJSON());
 });
 
 var helloApp = new WebApplication();
