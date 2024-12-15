@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Net;
 using Newtonsoft.Json;
+using PlateHTTP.Interfaces.Core;
 
 
 
@@ -36,6 +37,16 @@ namespace PlateHTTP.Core {
         public string FullPath {
             get => this.ListenerRequest.Url!.LocalPath;
         }
+        public string Body {
+            get {
+                string body;
+                using (var reader = new StreamReader(this.ListenerRequest.InputStream)) {
+                    body = reader.ReadToEnd();
+                }
+
+                return body;
+            }
+        }
         public ReadOnlyDictionary<string, string> UrlParams { get; private set; }
         public ReadOnlyDictionary<string, string> QueryParams {
             get {
@@ -48,10 +59,14 @@ namespace PlateHTTP.Core {
             }
         }
 
-        public Request(HttpListenerRequest listenerRequest, string? prefix) {
+        public static IRequest FromHttpRequest(HttpListenerRequest listenerRequest, ReadOnlyDictionary<string, string> urlParams, string? prefix) {
+            return new Request(listenerRequest, urlParams, prefix);
+        }
+
+        public Request(HttpListenerRequest listenerRequest, ReadOnlyDictionary<string, string> urlParams, string? prefix) {
             this.ListenerRequest = listenerRequest;
             this.Prefix = prefix ?? string.Empty;
-            this.UrlParams = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
+            this.UrlParams = urlParams;
         }
 
         internal void SetUrlParams(ReadOnlyDictionary<string, string> urlParams) {
@@ -59,14 +74,18 @@ namespace PlateHTTP.Core {
         }
 
         public ReadOnlyDictionary<string, dynamic> GetJSON() {
-            string jsonContent;
-            using (var reader = new StreamReader(this.ListenerRequest.InputStream)) {
-                jsonContent = reader.ReadToEnd();
-            }
+            try {
+                var data = new Dictionary<string, dynamic>();
+                foreach (var part in this.Body.Split("&")) {
+                    var partItem = part.Split("=");
+                    data[partItem[0].Trim()] = partItem[1].Trim();
+                }
 
-            return new ReadOnlyDictionary<string, dynamic>(
-                JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(jsonContent)
-            );
+                return new ReadOnlyDictionary<string, dynamic>(data);
+            }
+            catch {
+                return new ReadOnlyDictionary<string, dynamic>(new Dictionary<string, dynamic>());
+            }
         }
 
         public void Dispose() {
