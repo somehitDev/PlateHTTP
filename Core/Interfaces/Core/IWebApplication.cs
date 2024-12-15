@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading.Tasks;
 using PlateHTTP.Core;
@@ -11,11 +12,11 @@ namespace PlateHTTP.Interfaces.Core {
         public WebApplicationConfig? Config { get; set; }
         public bool IsAlive { get; }
         public string? Prefix { get; }
-        public Dictionary<string, Dictionary<string, Func<Request, Response, Task>>> Routes { get; }
+        public Dictionary<string, Dictionary<string, Func<IRequest, IResponse, Task>>> Routes { get; }
         public Dictionary<string, IWebApplication> SubApplications { get; }
         public Logging.ILogger? Logger { get; }
         public StaticFiles.IStaticFileLoader? StaticLoader { get; }
-        public object? TemplateLoader { get; set; }
+        public Dictionary<string, object> Extensions { get; }
 
 
         void EnableLogging(string minimumLogLevel);
@@ -26,11 +27,11 @@ namespace PlateHTTP.Interfaces.Core {
         Task Invoke(HttpListenerRequest listenerRequest, HttpListenerResponse listenerResponse);
 
         // route functions
-        void Route(string httpMethod, string path, Func<Request, Response, Task> callback);
-        void Get(string path, Func<Request, Response, Task> callback);
-        void Post(string path, Func<Request, Response, Task> callback);
-        void Put(string path, Func<Request, Response, Task> callback);
-        void Delete(string path, Func<Request, Response, Task> callback);
+        void Route(string httpMethod, string path, Func<IRequest, IResponse, Task> callback);
+        void Get(string path, Func<IRequest, IResponse, Task> callback);
+        void Post(string path, Func<IRequest, IResponse, Task> callback);
+        void Put(string path, Func<IRequest, IResponse, Task> callback);
+        void Delete(string path, Func<IRequest, IResponse, Task> callback);
 
         // mount
         void Mount(string prefix, IWebApplication subApplication);

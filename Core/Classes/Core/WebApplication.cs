@@ -25,34 +25,34 @@ namespace PlateHTTP.Core {
         public WebApplicationConfig? Config { get; set; }
         public bool IsAlive { get; private set; }
         public string? Prefix { get; private set; }
-        public Dictionary<string, Dictionary<string, Func<Request, Response, Task>>> Routes { get; private set; }
+        public Dictionary<string, Dictionary<string, Func<IRequest, IResponse, Task>>> Routes { get; private set; }
         public Dictionary<string, IWebApplication> SubApplications { get; private set; }
         public ILogger? Logger { get; private set; }
         public IStaticFileLoader? StaticLoader { get; private set; }
-        public object? TemplateLoader { get; set; }
+        public Dictionary<string, object> Extensions { get; private set; }
 
         // events
         public event Func<IWebApplication, Task>? OnStartup;
         public event Func<IWebApplication, Task>? OnShutdown;
-        public event Func<Request, Response, Task>? BeforeRequest;
-        public event Func<Request, Task>? AfterRequest;
+        public event Func<IRequest, IResponse, Task>? BeforeRequest;
+        public event Func<IRequest, Task>? AfterRequest;
 
 
         public WebApplication(WebApplicationConfig? config = null) {
             this.Config = config;
 
             this.IsAlive = false;
-            this.Routes = new Dictionary<string, Dictionary<string, Func<Request, Response, Task>>>() {
-                { "GET", new Dictionary<string, Func<Request, Response, Task>>() },
-                { "POST", new Dictionary<string, Func<Request, Response, Task>>() },
-                { "PUT", new Dictionary<string, Func<Request, Response, Task>>() },
-                { "DELETE", new Dictionary<string, Func<Request, Response, Task>>() }
+            this.Routes = new Dictionary<string, Dictionary<string, Func<IRequest, IResponse, Task>>>() {
+                { "GET", new Dictionary<string, Func<IRequest, IResponse, Task>>() },
+                { "POST", new Dictionary<string, Func<IRequest, IResponse, Task>>() },
+                { "PUT", new Dictionary<string, Func<IRequest, IResponse, Task>>() },
+                { "DELETE", new Dictionary<string, Func<IRequest, IResponse, Task>>() }
             };
             this.SubApplications = new Dictionary<string, IWebApplication>();
 
             this.Logger = null;
             this.StaticLoader = null;
-            this.TemplateLoader = null;
+            this.Extensions = new Dictionary<string, object>();
 
             // map favicon default
             this.Get("/favicon.ico", async ( request, response ) => {
@@ -91,7 +91,7 @@ namespace PlateHTTP.Core {
                     }
 
                     var regex = new Regex(pattern);
-                    if (regex.IsMatch(this.SafePrefix + url)) {
+                    if (regex.IsMatch(url)) {
                         var patternParts = item.Key.Split("/");
                         var urlParts = item.Key.Split("/");
 
@@ -147,14 +147,14 @@ namespace PlateHTTP.Core {
                 await this.SubApplications[prefix].Invoke(listenerRequest, listenerResponse);
             }
             else {
-                var request = new Request(listenerRequest, this.Prefix);
-                var response = new Response(this, listenerResponse);
+                var invokeStartTime = DateTime.Now;
 
-                var ( isMatch, urlParams ) = this.ParseUrlPattern(request.HttpMethod, request.Path);
+                var ( isMatch, urlParams ) = this.ParseUrlPattern(listenerRequest.HttpMethod, listenerRequest.Url!.LocalPath);
+
+                var request = Request.FromHttpRequest(listenerRequest, urlParams, this.Prefix)!;
+                var response = Response.FromHttpResponse(this, listenerResponse)!;
 
                 if (isMatch) {
-                    request.SetUrlParams(urlParams);
-
                     try {
                         // call beforerequest event
                         if (this.BeforeRequest != null) {
@@ -171,7 +171,7 @@ namespace PlateHTTP.Core {
 
                         // log after job finished
                         if (!new string[] { "/favicon.ico" }.Contains(request.FullPath)) {
-                            this.Logger?.Debug($"Endpoint [{request.HttpMethod}] `{request.FullPath}`");
+                            this.Logger?.Debug($"Endpoint [{request.HttpMethod}] `{request.FullPath}` ({(DateTime.Now - invokeStartTime).Seconds} sec)");
                         }
                     }
                     catch (KeyNotFoundException e) {
@@ -198,7 +198,7 @@ namespace PlateHTTP.Core {
         }
 
         // route functions
-        public void Route(string httpMethod, string path, Func<Request, Response, Task> callback) {
+        public void Route(string httpMethod, string path, Func<IRequest, IResponse, Task> callback) {
             var routeMap = this.Routes[httpMethod];
 
             // check path startswith "/"
@@ -212,16 +212,16 @@ namespace PlateHTTP.Core {
 
             routeMap[path] = callback;
         }
-        public void Get(string path, Func<Request, Response, Task> callback) {
+        public void Get(string path, Func<IRequest, IResponse, Task> callback) {
             this.Route("GET", path, callback);
         }
-        public void Post(string path, Func<Request, Response, Task> callback) {
+        public void Post(string path, Func<IRequest, IResponse, Task> callback) {
             this.Route("POST", path, callback);
         }
-        public void Put(string path, Func<Request, Response, Task> callback) {
+        public void Put(string path, Func<IRequest, IResponse, Task> callback) {
             this.Route("PUT", path, callback);
         }
-        public void Delete(string path, Func<Request, Response, Task> callback) {
+        public void Delete(string path, Func<IRequest, IResponse, Task> callback) {
             this.Route("DELETE", path, callback);
         }
 
