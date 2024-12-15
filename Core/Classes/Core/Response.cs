@@ -7,17 +7,23 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using PlateHTTP.Interfaces.Core;
 using PlateHTTP.Enums;
+using System.Collections.ObjectModel;
 
 
 
 namespace PlateHTTP.Core {
-    public class Response: Interfaces.Core.IResponse {
+    public class Response: IResponse {
         private HttpListenerResponse ListenerResponse;
 
-        public WebApplication WebApplication { get; private set; }
+        public IWebApplication WebApplication { get; private set; }
 
-        public Response(WebApplication webApplication, HttpListenerResponse listenerResponse): base() {
+        public static IResponse FromHttpResponse(IWebApplication webApplication, HttpListenerResponse listenerResponse) {
+            return new Response(webApplication, listenerResponse);
+        }
+
+        public Response(IWebApplication webApplication, HttpListenerResponse listenerResponse): base() {
             this.WebApplication = webApplication;
             this.ListenerResponse = listenerResponse;
         }
@@ -93,9 +99,14 @@ namespace PlateHTTP.Core {
         public async Task SendHTML(string html, StatusCode statusCode = StatusCode.OK) {
             await this.Send(html, "text/html", statusCode);
         }
-        public async Task SendJSON(Dictionary<string, dynamic> map, StatusCode statusCode = StatusCode.OK) {
-            var content = JsonConvert.SerializeObject(map);
-            await this.Send(content, "application/json", statusCode);
+        public async Task SendJSON(Dictionary<string, dynamic> dictionary, StatusCode statusCode = StatusCode.OK) {
+            await this.SendJSON(JsonConvert.SerializeObject(dictionary), statusCode);
+        }
+        public async Task SendJSON(ReadOnlyDictionary<string, dynamic> dictionary, StatusCode statusCode = StatusCode.OK) {
+            await this.SendJSON(JsonConvert.SerializeObject(dictionary), statusCode);
+        }
+        public async Task SendJSON(string jsonString, StatusCode statusCode = StatusCode.OK) {
+            await this.Send(jsonString, "application/json", statusCode);
         }
 
         public void Redirect(string path, StatusCode statusCode = StatusCode.Redirect) {
